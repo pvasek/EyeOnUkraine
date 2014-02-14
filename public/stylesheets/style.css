@@ -1,0 +1,50 @@
+body {
+  background-color: #eee;
+}
+.page-content {
+  padding: 20px;
+  background-color: #fff;
+}
+.navbar.main {
+  background-color: #005bbb;
+  border-radius: 0;
+  margin-bottom: 0;
+}
+.navbar.main .main-title {
+  color: #ffd500;
+  font-size: 25px;
+}
+.navbar.main .navbar-inner {
+  padding: 10px 0 10px 0;
+}
+.map-switch {
+  padding: 20px 0 20px 0;
+}
+.graph-list {
+  padding-top: 20px;
+  padding-bottom: 80px;
+}
+.graph-list:before,
+.graph-list:after {
+  content: " ";
+  display: table;
+}
+.graph-list:after {
+  clear: both;
+}
+.graph {
+  float: left;
+  min-height: 150px;
+  min-width: 150px;
+  border: 1px solid #ddd;
+  margin-right: 20px;
+  padding: 0 15px 15px 15px;
+}
+.graph h3 {
+  margin: 10px 0;
+}
+#map-canvas {
+  width: 100%;
+  height: 500px;
+  border: 1px solid #ddd;
+}

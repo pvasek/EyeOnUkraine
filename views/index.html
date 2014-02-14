@@ -1,0 +1,58 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="navbar main">
+	<div class="navbar-inner">
+		<div class="container">
+			<div class="main-title pull-left">Eye on Ukraine</div>
+			<a href="/app" class="btn btn-primary pull-right"><i class="glyphicon glyphicon-eye-open"></i> app</a>
+		</div>
+	</div>
+</div>
+
+<div class="container">
+	<div class="page-content">	
+		<div class="map-switch">
+			<button class="btn btn-primary">Number of Victims</button>
+			<button class="btn btn-default">Number of Cases</button>
+		</div>
+		<div id="map-canvas">
+		</div>
+
+		<div class="graph-list">
+			<div class="graph">
+				<h3 class="title">Number of cases per month</h3>
+				<div class="graph-content">
+				GRAPH
+				</div>
+			</div>
+
+			<div class="graph">
+				<h3 class="title">Perpetrators</h3>
+				<div class="graph-content">
+				GRAPH
+				</div>
+			</div>
+		</div>
+	</div>	
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script type="text/javascript"
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD2D_gOp67MT5muDp3vlwFW68xq_l202sY&sensor=false">
+</script>
+<script type="text/javascript">
+  function initialize() {
+    var mapOptions = {
+      center: new google.maps.LatLng(48.886392, 31.992188),
+      zoom: 6
+    };
+    var map = new google.maps.Map(document.getElementById("map-canvas"),
+        mapOptions);
+  }
+  google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+
+{% endblock %}
