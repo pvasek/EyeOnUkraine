@@ -1,8 +1,9 @@
+var everyauth = require('everyauth');
 
 exports.index = function(req, res){
-    req.user = req.user || {};
-    req.user.google = req.user.google || {};
-    res.render('app', { userEmail: req.user.google.email, userPictureUrl: req.user.google.picture })
+    console.log(everyauth.user);
+    console.log(req.user);
+    res.render('app', { userEmail: req.user.email })
 };
 
 exports.login = function(req, res){

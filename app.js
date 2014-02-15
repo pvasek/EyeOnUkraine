@@ -12,13 +12,17 @@ var user = require('./routes/portal');
 var path = require('path');
 var portal = require('./routes/portal');
 var auth = require('./auth');
+var conf = require('./conf');
+var mongoose = require('mongoose');
+var model = require('./model');
 
 var app = express();
 
 
-
 // all environments
 app.configure(function(){
+
+    auth.createDefaultUsers(conf.users);
     auth.configure(app);
 
     app.engine('html', swig.renderFile);
@@ -32,7 +36,8 @@ app.configure(function(){
     app.use(express.json());
     app.use(express.urlencoded());
     app.use(express.methodOverride());
-    app.use(express.cookieParser());
+    app.use(express.cookieParser('UDSQ_QTttvGCisFSKJTUmQ6Bf3VRpY'));
+    //app.use(express.cookieSession());
     app.use(express.session({secret: 'hgrr389grud'}));
     app.use(everyauth.middleware());
     app.use(app.router);
@@ -41,6 +46,21 @@ app.configure(function(){
 // development only
 app.configure('development', function(){
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+});
+
+// connect to db
+var dbUri = 'mongodb://localhost/eyeonukraine';
+
+var db = mongoose.connection;
+
+db.on('error', console.error);
+
+mongoose.connect(dbUri, function (err, res) {
+    if (err) {
+        console.log ('ERROR connecting to: ' + dbUri + '. ' + err);
+    } else {
+        console.log ('Succeeded connected to: ' + dbUri);
+    }
 });
 
 
