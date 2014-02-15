@@ -49,7 +49,7 @@ exports.configure = function(app){
                 promise.fail(err);
             } else {
                 if (user.aid === source.id) {
-                    promise.fulfill({id: source.aid, email: user.email});
+                    promise.fulfill({id: user.aid, email: user.email});
                 } else {
                     user.aid = source.id;
                     user.save(function(err){

@@ -15,8 +15,23 @@ var auth = require('./auth');
 var conf = require('./conf');
 var mongoose = require('mongoose');
 var model = require('./model');
+var MongoStore = require('connect-mongo')(express);
 
 var app = express();
+
+
+// connect to db
+var dbUri = 'mongodb://localhost/eyeonukraine';
+var db = mongoose.connection;
+db.on('error', console.error);
+
+mongoose.connect(dbUri, function (err, res) {
+    if (err) {
+        console.log ('ERROR connecting to: ' + dbUri + '. ' + err);
+    } else {
+        console.log ('Succeeded connected to: ' + dbUri);
+    }
+});
 
 
 // all environments
@@ -37,30 +52,23 @@ app.configure(function(){
     app.use(express.urlencoded());
     app.use(express.methodOverride());
     app.use(express.cookieParser('UDSQ_QTttvGCisFSKJTUmQ6Bf3VRpY'));
-    //app.use(express.cookieSession());
     app.use(express.session({secret: 'hgrr389grud'}));
+    app.use(express.session({ //TODO: for some reason this doesn't work session not kept during restarts
+        secret: 'hgrr389grud',
+        maxAge: new Date(Date.now() + 1200000),//20min
+        store: new MongoStore({
+            //db: 'eyeonukraine_sessions',
+            //host: 'localhost'
+            mongoose_connection: db
+        })
+    }));
     app.use(everyauth.middleware());
     app.use(app.router);
 });
 
 // development only
 app.configure('development', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-});
-
-// connect to db
-var dbUri = 'mongodb://localhost/eyeonukraine';
-
-var db = mongoose.connection;
-
-db.on('error', console.error);
-
-mongoose.connect(dbUri, function (err, res) {
-    if (err) {
-        console.log ('ERROR connecting to: ' + dbUri + '. ' + err);
-    } else {
-        console.log ('Succeeded connected to: ' + dbUri);
-    }
+    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
 
 
