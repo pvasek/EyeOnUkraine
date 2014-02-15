@@ -18,4 +18,14 @@ There is only one entity in the system *Case*.
 * Description - string
 
 ## Hosting
-Right now it is deployed on the appfog and it's available at http://eyeonukraine.eu01.aws.af.cm/
+Right now it is deployed on the appfog and it's available at [http://eyeonukraine.eu01.aws.af.cm]
+
+## Developers Notes
+
+To install a node module you should add it to packages.json and run npm install or run
+
+`npm install <package> --save`
+
+This command will install the package and updates the packages.json
+
+
