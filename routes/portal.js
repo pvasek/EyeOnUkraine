@@ -1,8 +1,6 @@
 var everyauth = require('everyauth');
 
 exports.index = function(req, res){
-    console.log(everyauth.user);
-    console.log(req.user);
     res.render('app', { userEmail: req.user.email })
 };
 

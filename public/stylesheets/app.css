@@ -1,0 +1,38 @@
+body {
+  background-color: #eee;
+  color: #444;
+}
+.view-detail {
+  background-color: #fff;
+}
+.toolbar {
+  background-color: #ccc;
+  padding: 5px;
+}
+form {
+  padding: 20px;
+  padding-top: 0;
+}
+.container-fluid-inline {
+  padding: 0;
+}
+.lan {
+  color: #ccc;
+  font-style: italic;
+  font-size: 0.8em;
+  font-weight: normal;
+}
+textarea {
+  min-height: 400px;
+}
+.lang,
+.long {
+  width: 80px;
+  float: left;
+}
+.map-canvas {
+  background-color: #eee;
+  border: 1px solid #ddd;
+  height: 250px;
+  width: 100%;
+}

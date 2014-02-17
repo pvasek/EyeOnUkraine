@@ -1,5 +1,5 @@
 {
-  "name": "EyeOnUkraine",
+  "name": "eyeonukraine",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -11,6 +11,7 @@
     "less-middleware": "*",
     "everyauth": "~0.4.5",
     "mongoose": "~3.8.7",
-    "connect-mongo": "*"
+    "connect-mongo": "*",
+    "underscore": "~1.6.0"
   }
 }

@@ -1,0 +1,16 @@
+<div class="toolbar">
+    <a href="/app#/cases/new" class="btn btn-primary">New</a>
+</div>
+
+<table class="table">
+    <tr>
+        <th>Date</th>
+        <th>Name</th>
+        <th></th>
+    </tr>
+    <tr ng-repeat="item in cases">
+        <td>{{item.title}}</td>
+        <td>{{item.description}}</td>
+        <td><a ng-href="#/cases/{{item.id}}">Edit</a></td>
+    </tr>
+</table>

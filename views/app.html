@@ -1,22 +1,42 @@
 {% extends 'layout.html' %}
+
+{% block head %}
+    <link rel="stylesheet" href="/stylesheets/app.css">
+{% endblock %}
+
 {% block content %}
 
+<div class="app" ng-app="Admin" ng-controller="MainCtrl">
 <nav class="navbar navbar-default" role="navigation">
       <div class="container-fluid">
         <div class="navbar-header">
           <a class="navbar-brand" href="/app">Ukraine <i class="glyphicon glyphicon-eye-open"></i></a>
         </div>
-		    <ul class="nav navbar-nav">
-          <li class="active"><a href="#">Cases</a></li>
+		<ul class="nav navbar-nav">
+          <li class="active"><a href="#/cases">Cases</a></li>
         </ul>
       
       	<ul class="nav navbar-nav navbar-right">
-      		<li>{{userEmail}}</li>
-      		<li><img src="{{userPictureUrl}}"></img></li>
+      		<li><a href="#">{{userEmail}}</a></li>
+      		<li><img src="{{userPictureUrl}}"/></li>
             <li><a href="/logout">Logout</a></li>
       </ul>
   </div>
 </nav>
-	
+
+<div class="view-detail container-fluid container-fluid-inline" ng-view></div>
+
+
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+
+<script type="text/javascript" src="/bower_components/jquery/jquery.min.js"></script><script type="text/javascript" src="/bower_components/angular/angular.min.js"></script>
+<script type="text/javascript" src="/bower_components/angular-route/angular-route.min.js"></script>
+<script type="text/javascript" src="/bower_components/angular-resource/angular-resource.min.js"></script>
+<script type="application/javascript" src="/javascripts/app.js"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD2D_gOp67MT5muDp3vlwFW68xq_l202sY&sensor=false&amp;libraries=places,drawing"></script>
 
 {% endblock %}
