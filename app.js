@@ -16,7 +16,7 @@ var conf = require('./conf');
 var mongoose = require('mongoose');
 var model = require('./model');
 var MongoStore = require('connect-mongo')(express);
-var cases = require('./routes/case-stub');
+var cases = require('./routes/case');
 var hosting = require('./hosting');
 
 var app = express();
@@ -89,10 +89,10 @@ app.resource = function(path, obj) {
     this.del(path + '/:id', authorizedOnly, function(req, res){
         obj.delete(req, res, req.params.id);
     });
-    this.put(path, authorizedOnly, function(req, res){
+    this.put(path + '/:id', authorizedOnly, function(req, res){
         obj.put(req, res);
     });
-    this.post(path + '/:id', authorizedOnly, function(req, res) {
+    this.post(path, authorizedOnly, function(req, res) {
         obj.post(req, res, req.params.id);
     });
 };

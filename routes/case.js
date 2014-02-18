@@ -47,29 +47,16 @@ exports.getList = function(req, res) {
             console.log("There is no documents in database.");
             res.status(404).send('Not found'); //I'm not sure with 404 at this place
         } else {
+            cases.forEach(function(c){
+                c.id = c._id;
+            });
             res.json(cases);
         }
     });
 };
 
-exports.put = function(req, res) {
-    var c = new Case ({title: req.body.name,
-                       date: new Date(req.body.date),
-                       numberOfVictims: req.body.numberOfVictims,
-                       description: req.body.description});
-
-    c.save(function(err) {
-        if (err) {
-            console.log('Error on save Case entity');
-            res.status(500).send('We are working on that!');
-        }}
-    );
-
-    res.json({id: c._id});
-};
-
-exports.post = function(req, res, id){
-    Case.findByIdAndUpdate(id, req.body, function(err, c) {
+exports.put = function(req, res, id) {
+    Case.findByIdAndUpdate(req.body.id, req.body, function(err, c) {
         if (err) {
             console.log(err);
             res.status(500).send('We are working on that!');
@@ -80,6 +67,22 @@ exports.post = function(req, res, id){
             res.json({id: c._id});
         }
     })
+};
+
+exports.post = function(req, res){
+    var c = new Case ({title: req.body.name,
+                       date: new Date(req.body.date),
+                       numberOfVictims: req.body.numberOfVictims,
+                       description: req.body.description});
+
+    c.save(function(err) {
+        if (err) {
+            console.log('Error on save Case entity');
+            res.status(500).send('We are working on that!');
+        } else {
+            res.json({id: c._id});
+        }
+    });
 };
 
 exports.delete = function(req, res, id) {
