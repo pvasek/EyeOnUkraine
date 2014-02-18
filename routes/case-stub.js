@@ -1,52 +1,97 @@
-var _ = require("underscore");
+var mongoose = require('mongoose');
 
-var data = {
-    '1': {id: 1, title: "case1", description: 'description'},
-    '2': {id: 2, title: "case2", description: 'description'},
-    '3': {id: 3, title: "case3", description: 'description'},
-    '4': {id: 4, title: "case4", description: 'description'},
-    '5': {id: 5, title: "case5", description: 'description'}
-};
+// connect to db
+var dbUri = 'mongodb://localhost/eyeonukraine';
+var db = mongoose.connection;
+db.on('error', console.error);
 
+mongoose.connect(dbUri, function (err, res) {
+    if (err) {
+        console.log ('ERROR connecting to: ' + dbUri + '. ' + err);
+    } else {
+        console.log ('Succeeded connected to: ' + dbUri);
+    }
+});
+
+var caseSchema = new mongoose.Schema({
+    title: { type: String, trim: true },
+    date: Date,
+    numberOfVictims: { type: Number, min: 0 },
+    description: String
+});
+
+var Case = mongoose.model('Cases', caseSchema);
+
+//lean() - see: http://ilee.co.uk/mongoose-documents-and-jsonstringify/
 
 exports.get = function(req, res, id) {
-    var item = data[id];
-    if (!item) {
-        res.status(404).send('Not found');
-        return;
-    }
-    res.json(item);
+    Case.findOne({ _id: id }).lean().exec(function(err, c) {
+        if (err) {
+            console.log(err);
+            res.status(500).send('We are working on that!');
+        } else if(c == null) {
+            console.log("Document with id: " + id + " is not in database.");
+            res.status(404).send('Not found');
+        } else {
+            res.json(c);
+        }
+    });
 };
 
 exports.getList = function(req, res) {
-    res.json(_.values(data));
-};
-
-exports.put = function(req, res, id) {
-    req.body.id = id;
-    data[id] = req.body;
-    res.json({id: id});
-};
-
-var newId = 100;
-exports.post = function(req, res){
-    var inputData = _.isArray(req.body) ? req.body : [req.body];
-    var results = [];
-    inputData.forEach(function(item){
-        if (!item.id) {
-            item.id = newId++;
+    Case.find({}).lean().exec(function(err, cases) {
+        if (err) {
+            console.log(err);
+            res.status(500).send('We are working on that!');
+        } else if (cases.length == 0) {
+            console.log("There is no documents in database.");
+            res.status(404).send('Not found'); //I'm not sure with 404 at this place
+        } else {
+            res.json(cases);
         }
-        data[item.id] = item;
-        results.push(item);
     });
+};
 
-    if (results.length === 1 ) {
-        res.json(results[0]);
-    } else {
-        res.json(results);
-    }
+exports.put = function(req, res) {
+    var c = new Case ({title: req.body.name,
+                       date: new Date(req.body.date),
+                       numberOfVictims: req.body.numberOfVictims,
+                       description: req.body.description});
+
+    c.save(function(err) {
+        if (err) {
+            console.log('Error on save Case entity');
+            res.status(500).send('We are working on that!');
+        }}
+    );
+
+    res.json({id: c._id});
+};
+
+exports.post = function(req, res, id){
+    Case.findByIdAndUpdate(id, req.body, function(err, c) {
+        if (err) {
+            console.log(err);
+            res.status(500).send('We are working on that!');
+        } else if(c == null) {
+            console.log("Document with id: " + id + " is not in database.");
+            res.status(404).send('Not found');
+        } else {
+            res.json({id: c._id});
+        }
+    })
 };
 
 exports.delete = function(req, res, id) {
-    delete data[id];
+    Case.findOneAndRemove({ _id: id }, function(err, c) {
+        if (err) {
+            console.log(err);
+            res.status(500).send('We are working on that!');
+        } else if(c == null) {
+            console.log("Document with id: " + id + " is not in database.");
+            res.status(404).send('Not found');
+        } else {
+            res.json({id: c._id});
+        }
+    });
 };
