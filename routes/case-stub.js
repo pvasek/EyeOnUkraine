@@ -28,10 +28,14 @@ exports.put = function(req, res, id) {
     res.json({id: id});
 };
 
+var newId = 100;
 exports.post = function(req, res){
     var inputData = _.isArray(req.body) ? req.body : [req.body];
     var results = [];
     inputData.forEach(function(item){
+        if (!item.id) {
+            item.id = newId++;
+        }
         data[item.id] = item;
         results.push(item);
     });

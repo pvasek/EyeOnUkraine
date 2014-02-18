@@ -1,40 +1,42 @@
 <div class="toolbar">
     <a href="/app#/cases" class="btn btn-default">Back</a>
-    <a ng-click="save(item)" class="btn btn-primary">Save</a>
+    <button ng-click="save(item)" class="btn btn-primary" ng-disable="saving">Save</button>
+    <span ng-show="saving">Saving…</span>
+    <button ng-click="save(item, true)" class="btn btn-default next-btn-group" ng-disable="saving">Save & New</button>
 </div>
 <h2>{{item.Title}}</h2>
-<form role="form">
+<form role="form" name="detail">
     <div class="row">
         <div class="col-sm-6">
             <div class="form-group">
                 <label for="date">Date</label>
-                <input type="datetime" class="form-control" id="date" placeholder="enter title" ng-model="item.date">
+                <input type="datetime" required class="form-control" id="date" placeholder="DD/MM/YYYY" ng-model="item.date">
             </div>
             <div class="form-group">
                 <label for="victimCount">Number of Victims</label>
-                <input type="datetime" class="form-control" id="victimCount" placeholder="enter title" ng-model="item.victimCount">
+                <input type="number" required class="form-control" id="victimCount" placeholder="" ng-model="item.victimCount">
             </div>
             <div class="form-group">
-                <label for="place">Search Location</label>
-                <input type="text" class="form-control place-search" id="place" placeholder="Search place...">
+                <label for="place">Place</label>
+                <input type="text" class="form-control place-search" id="place" placeholder="Search place..." ng-model="item.place">
             </div>
             <div class="form-group">
-                <label for="lang">Place (lang, long)</label>
+                <label for="lat">Place (latitude, longitude)</label>
                 <div>
-                    <input type="datetime" class="form-control lang" id="lang" placeholder="lang" ng-model="item.lang">
-                    <input type="datetime" class="form-control long" id="long" placeholder="long" ng-model="item.long">
+                    <input type="text" required class="form-control lat" id="lat" placeholder="latitude" ng-model="item.lat">
+                    <input type="text" required class="form-control lng" id="lng" placeholder="longitude" ng-model="item.lng">
                 </div>
             </div>
         </div>
         <div class="form-group col-sm-6">
             <label for="title">Map</label>
-            <div class="map-canvas" map search-input=".place-search"></div>
+            <div class="map-canvas" map search-input=".place-search" lat="item.lat" lng="item.lng" place="item.place"></div>
         </div>
     </div>
     <div class="row">
         <div class="form-group col-sm-6">
             <label for="title">Title <span class="lan">english</span></label>
-            <input type="text" class="form-control" id="title" placeholder="enter title" ng-model="item.title">
+            <input type="text" required class="form-control" id="title" placeholder="enter title" ng-model="item.title">
         </div>
         <div class="form-group col-sm-6">
             <label for="titleLocal">Title <span class="lan">ukraine</span></label>
@@ -44,7 +46,7 @@
     <div class="row">
         <div class="form-group col-sm-6">
             <label for="description">Description <span class="lan">english</span></label>
-            <textarea class="form-control" id="description" placeholder="enter description" ng-model="item.description"></textarea>
+            <textarea class="form-control" required id="description" placeholder="enter description" ng-model="item.description"></textarea>
         </div>
         <div class="form-group col-sm-6">
             <label for="descriptionLocal">Description <span class="lan">ukraine</span></label>

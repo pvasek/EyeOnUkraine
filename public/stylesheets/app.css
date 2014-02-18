@@ -25,9 +25,9 @@ form {
 textarea {
   min-height: 400px;
 }
-.lang,
-.long {
-  width: 80px;
+.lat,
+.lng {
+  width: 180px;
   float: left;
 }
 .map-canvas {
@@ -35,4 +35,11 @@ textarea {
   border: 1px solid #ddd;
   height: 350px;
   width: 100%;
+}
+.next-btn-group {
+  margin-left: 30px;
+}
+input.ng-invalid,
+textarea.ng-invalid {
+  background-color: #FFDFDD;
 }

@@ -24,7 +24,8 @@ module.config(['$routeProvider', '$locationProvider', function($routeProvider, $
 module.factory('Case', ['$resource',
     function($resource){
         return $resource('api/case/:id', {}, {
-            get: {method:'GET', params:{id:'@id'}}
+            get: {method:'GET', params:{id:'@id'}},
+            post: {method:'POST'}
         });
     }]);
 
@@ -38,12 +39,43 @@ module.controller('CaseListCtrl', ['$scope', 'Case', function($scope, Case){
 }]);
 
 
-module.controller('CaseDetailCtrl', ['$scope', '$routeParams','Case', function($scope, $routeParams, Case){
-    $scope.item = Case.get({id: $routeParams.id});
-    $scope.save = function(item){
-        item.$save();
-    };
-}]);
+module.controller('CaseDetailCtrl', ['$scope', '$routeParams', '$location', '$q', 'Case',
+    function($scope, $routeParams, $location, $q, Case){
+        if ($routeParams.id == 'new') {
+            $scope.item = {};
+        } else {
+            $scope.item = Case.get({id: $routeParams.id});
+        }
+
+        $scope.save = function(item, redirectToNew){
+            if (!$scope.detail.$valid) {
+                return;
+            }
+
+            var saveResult = $q.defer();
+            $scope.saving = true;
+
+            if (item.id) {
+                item.$save(function(data){
+                    saveResult.resolve(data);
+                });
+            } else {
+                Case.post(item, function(data){
+                    saveResult.resolve(data);
+                });
+            }
+            var lastId = item.id;
+            saveResult.promise.then(function(data){
+                $scope.saving = false;
+                if (redirectToNew) {
+                    $scope.item = {};// in case we are on the new already
+                    $location.url('/cases/new'); // in case we are not
+                } else if (lastId != data.id) {
+                    $location.url('/cases/' + data.id);
+                }
+            })
+        };
+    }]);
 
 
 // custom directives
@@ -52,7 +84,14 @@ module.directive('map', function() {
     return {
         restict: 'A',
         transclude: false,
+        scope: {
+            lng: '=',
+            lat: '=',
+            place: '='
+        },
         link: function(scope, element, attrs, controller, transcludeFn) {
+            var defaultZoom = 17;
+
             var mapOptions = {
                 center: new google.maps.LatLng(48.886392, 31.992188),
                 zoom: 6
@@ -60,47 +99,44 @@ module.directive('map', function() {
             var firstMarker;
             var map = new google.maps.Map(element[0], mapOptions);
 
+            var createMarker = function(latLng){
+                if (firstMarker !=  null) {
+                    firstMarker.setMap(null);
+                }
+                firstMarker = new google.maps.Marker({
+                    map: map,
+                    title: 'place',
+                    position: latLng
+                });
+
+                map.setCenter(latLng);
+                map.setZoom(defaultZoom);
+            };
+
+            scope.$watch('lng', function(){
+                if (scope.lng) {
+                    var latLng = new google.maps.LatLng(scope.lat, scope.lng);
+                    createMarker(latLng);
+                }
+            });
+
             // Create the search box and link it to the UI element.
-            var input = $(attrs.searchInput).get(0);
-            //map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+            var input = $(attrs.searchInput);
+            var searchBox = new google.maps.places.SearchBox(input.get(0));
 
-            var searchBox = new google.maps.places.SearchBox(
-                /** @type {HTMLInputElement} */(input));
-
-            // Listen for the event fired when the user selects an item from the
-            // pick list. Retrieve the matching places for that item.
             google.maps.event.addListener(searchBox, 'places_changed', function() {
                 var places = searchBox.getPlaces();
 
-                if (firstMarker) {
-                    firstMarker.setMap(null);
-                }
-
-                // For each place, get the icon, place name, and location.
-                markers = null;
                 var bounds = new google.maps.LatLngBounds();
                 if (places.length > 0) {
                     var place = places[0];
-                    var image = {
-                        url: place.icon,
-                        size: new google.maps.Size(71, 71),
-                        origin: new google.maps.Point(0, 0),
-                        anchor: new google.maps.Point(17, 34),
-                        scaledSize: new google.maps.Size(25, 25)
-                    };
-
-                    // Create a marker for each place.
-                    firstMarker = new google.maps.Marker({
-                        map: map,
-                        icon: image,
-                        title: place.name,
-                        position: place.geometry.location
+                    createMarker(place.geometry.location);
+                    scope.$apply(function(){
+                        scope.lat = place.geometry.location.lat();
+                        scope.lng = place.geometry.location.lng();
+                        scope.place = input.val();
                     });
-                    bounds.extend(place.geometry.location);
                 }
-
-                map.fitBounds(bounds);
-                map.setZoom(13);
             });
 
         }
