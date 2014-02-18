@@ -17,20 +17,21 @@ var mongoose = require('mongoose');
 var model = require('./model');
 var MongoStore = require('connect-mongo')(express);
 var cases = require('./routes/case-stub');
+var hosting = require('./hosting');
 
 var app = express();
 
 
 // connect to db
-var dbUri = 'mongodb://localhost/eyeonukraine';
+var mongoUrl = hosting.getMongoUrl('mongodb://localhost/eyeonukraine');
 var db = mongoose.connection;
 db.on('error', console.error);
 
-mongoose.connect(dbUri, function (err, res) {
+mongoose.connect(mongoUrl, function (err, res) {
     if (err) {
-        console.log ('ERROR connecting to: ' + dbUri + '. ' + err);
+        console.log ('ERROR connecting to: ' + mongoUrl + '. ' + err);
     } else {
-        console.log ('Succeeded connected to: ' + dbUri);
+        console.log ('Succeeded connected to: ' + mongoUrl);
     }
 });
 
@@ -42,7 +43,7 @@ app.configure(function(){
     auth.configure(app);
 
     app.engine('html', swig.renderFile);
-    app.set('port', process.env.PORT || 3000);
+    app.set('port', hosting.getPort(3000));
     app.set('views', path.join(__dirname, 'views'));
     app.set('view engine', 'html');
     app.use(require('less-middleware')({ src: path.join(__dirname, 'public') }));
@@ -53,14 +54,14 @@ app.configure(function(){
     app.use(express.urlencoded());
     app.use(express.methodOverride());
     app.use(express.cookieParser('UDSQ_QTttvGCisFSKJTUmQ6Bf3VRpY'));
-    app.use(express.session({
-        secret: 'hgrr389grud',
-        maxAge: new Date(Date.now() + 1200000),//20min
-        store: new MongoStore({
-            db: 'sessions',
-            mongoose_connection: db.connection
-        })
-    }));
+    app.use(express.session({secret: 'hgrr389grud'}));
+    // app.use(express.session({
+    //     secret: 'hgrr389grud',
+    //     maxAge: new Date(Date.now() + 1200000),//20min
+    //     store: new MongoStore({
+    //         mongoose_connection: db.connection
+    //     })
+    // }));
     app.use(everyauth.middleware());
     app.use(app.router);
 });

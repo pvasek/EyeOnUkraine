@@ -7,8 +7,10 @@ exports.createDefaultUsers = function(users) {
         users.forEach(function(user){
             model.User.findOne({ email: user.email},function(err, existing){
                 if (!existing) {
+                    console.log('creating user: ' + user.email);
                     var newUser = new model.User({id: user.id, email: user.email});
                     newUser.save();
+                    console.log('user saved');
                 }
             })
         })
