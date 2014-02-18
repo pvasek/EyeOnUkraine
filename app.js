@@ -89,10 +89,12 @@ app.resource = function(path, obj) {
     this.del(path + '/:id', authorizedOnly, function(req, res){
         obj.delete(req, res, req.params.id);
     });
-    this.put(path + '/:id', authorizedOnly, function(req, res){
-        obj.put(req, res, req.params.id);
+    this.put(path, authorizedOnly, function(req, res){
+        obj.put(req, res);
     });
-    this.post(path, authorizedOnly, obj.post);
+    this.post(path + '/:id', authorizedOnly, function(req, res) {
+        obj.post(req, res, req.params.id);
+    });
 };
 
 // routes
