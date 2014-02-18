@@ -5,19 +5,17 @@
 <h2>{{item.Title}}</h2>
 <form role="form">
     <div class="row">
-        <div class="form-group col-sm-6">
-            <label for="date">Date</label>
-            <input type="datetime" class="form-control" id="date" placeholder="enter title" ng-model="item.date">
-        </div>
-        <div class="form-group col-sm-6">
-            <label for="victimCount">Number of Victims</label>
-            <input type="datetime" class="form-control" id="victimCount" placeholder="enter title" ng-model="item.victimCount">
-        </div>
-    </div>
-    <div class="row">
         <div class="col-sm-6">
             <div class="form-group">
-                <label for="place">Location</label>
+                <label for="date">Date</label>
+                <input type="datetime" class="form-control" id="date" placeholder="enter title" ng-model="item.date">
+            </div>
+            <div class="form-group">
+                <label for="victimCount">Number of Victims</label>
+                <input type="datetime" class="form-control" id="victimCount" placeholder="enter title" ng-model="item.victimCount">
+            </div>
+            <div class="form-group">
+                <label for="place">Search Location</label>
                 <input type="text" class="form-control place-search" id="place" placeholder="Search place...">
             </div>
             <div class="form-group">

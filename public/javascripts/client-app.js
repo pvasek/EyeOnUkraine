@@ -40,6 +40,9 @@ module.controller('CaseListCtrl', ['$scope', 'Case', function($scope, Case){
 
 module.controller('CaseDetailCtrl', ['$scope', '$routeParams','Case', function($scope, $routeParams, Case){
     $scope.item = Case.get({id: $routeParams.id});
+    $scope.save = function(item){
+        item.$save();
+    };
 }]);
 
 

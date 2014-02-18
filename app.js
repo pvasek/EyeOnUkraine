@@ -16,7 +16,7 @@ var conf = require('./conf');
 var mongoose = require('mongoose');
 var model = require('./model');
 var MongoStore = require('connect-mongo')(express);
-var cases = require('./routes/case');
+var cases = require('./routes/case-stub');
 
 var app = express();
 

@@ -30,8 +30,10 @@ exports.put = function(req, res, id) {
 
 exports.post = function(req, res){
     var inputData = _.isArray(req.body) ? req.body : [req.body];
+    var results = [];
     inputData.forEach(function(item){
         data[item.id] = item;
+        results.push(item);
     });
 
     if (results.length === 1 ) {
