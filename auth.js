@@ -42,14 +42,17 @@ exports.configure = function(app){
 
     function findOrAddUser (context, source) {
         var promise = context.Promise();
+        console.log("finding one");
         model.User.findOne({email: source.email}, function(err, user){
             if (user == null) {
                 console.log("Unknown user:");
                 console.log(source);
             }
             if (err) {
+                console.log("User failed");
                 promise.fail(err);
             } else {
+                console.log("User found");
                 if (user.aid === source.id) {
                     promise.fulfill({id: user.aid, email: user.email});
                 } else {

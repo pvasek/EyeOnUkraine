@@ -1,18 +1,5 @@
 var mongoose = require('mongoose');
 
-// connect to db
-var dbUri = 'mongodb://localhost/eyeonukraine';
-var db = mongoose.connection;
-db.on('error', console.error);
-
-mongoose.connect(dbUri, function (err, res) {
-    if (err) {
-        console.log ('ERROR connecting to: ' + dbUri + '. ' + err);
-    } else {
-        console.log ('Succeeded connected to: ' + dbUri);
-    }
-});
-
 var caseSchema = new mongoose.Schema({
     title: { type: String, trim: true },
     date: Date,

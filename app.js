@@ -35,7 +35,6 @@ mongoose.connect(mongoUrl, function (err, res) {
     }
 });
 
-
 // all environments
 app.configure(function(){
 
@@ -54,14 +53,14 @@ app.configure(function(){
     app.use(express.urlencoded());
     app.use(express.methodOverride());
     app.use(express.cookieParser('UDSQ_QTttvGCisFSKJTUmQ6Bf3VRpY'));
-    app.use(express.session({secret: 'hgrr389grud'}));
-    // app.use(express.session({
-    //     secret: 'hgrr389grud',
-    //     maxAge: new Date(Date.now() + 1200000),//20min
-    //     store: new MongoStore({
-    //         mongoose_connection: db.connection
-    //     })
-    // }));
+    //app.use(express.session({secret: 'hgrr389grud'}));
+    app.use(express.session({
+         secret: 'hgrr389grud',
+         maxAge: new Date(Date.now() + 1200000),//20min
+         store: new MongoStore({
+             mongoose_connection: mongoose.createConnection(mongoUrl)
+         })
+    }));
     app.use(everyauth.middleware());
     app.use(app.router);
 });
