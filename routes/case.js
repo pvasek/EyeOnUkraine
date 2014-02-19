@@ -1,18 +1,34 @@
 var mongoose = require('mongoose');
 
-var caseSchema = new mongoose.Schema({
-    title: { type: String, trim: true },
+var caseSchema = new mongoose.Schema({    
     date: Date,
-    numberOfVictims: { type: Number, min: 0 },
-    description: String
+    numberOfVictims: { type: Number, min: 1 },
+
+    title: { type: String, trim: true },
+    description: { type: String },
+    localTitle: { type: String, trim: true },
+    localDescription: { type: String },
+
+    place: { type: String },
+    lat: { type: Number },
+    lng: { type: Number }
 });
+
+// it is used in modelInstance.toJSON() calls,
+// and toJSON is called in JSON.stringify() that is inside res.json() method
+caseSchema.options.toJSON = caseSchema.options.toJSON || {};
+caseSchema.options.toJSON.transform = function (doc, ret, options) {
+    // we just "rename" _id to id
+    ret.id = ret._id;
+    delete ret._id;
+};
 
 var Case = mongoose.model('Cases', caseSchema);
 
 //lean() - see: http://ilee.co.uk/mongoose-documents-and-jsonstringify/
-
+// PV: I removed lean() in order to use the same toJSON method in all REST methods now
 exports.get = function(req, res, id) {
-    Case.findOne({ _id: id }).lean().exec(function(err, c) {
+    Case.findOne({ _id: id }).exec(function(err, c) {
         if (err) {
             console.log(err);
             res.status(500).send('We are working on that!');
@@ -30,9 +46,10 @@ exports.getList = function(req, res) {
         if (err) {
             console.log(err);
             res.status(500).send('We are working on that!');
-        } else if (cases.length == 0) {
-            console.log("There is no documents in database.");
-            res.status(404).send('Not found'); //I'm not sure with 404 at this place
+        } else if (cases.length == 0) {            
+            //PV: i think its valid to have no results, just return empty array
+            //res.status(404).send('Not found'); //MT: I'm not sure with 404 at this place
+            res.json([]);
         } else {
             cases.forEach(function(c){
                 c.id = c._id;
@@ -51,23 +68,20 @@ exports.put = function(req, res, id) {
             console.log("Document with id: " + id + " is not in database.");
             res.status(404).send('Not found');
         } else {
-            res.json({id: c._id});
+            res.json(c);
         }
     })
 };
 
 exports.post = function(req, res){
-    var c = new Case ({title: req.body.name,
-                       date: new Date(req.body.date),
-                       numberOfVictims: req.body.numberOfVictims,
-                       description: req.body.description});
+    var c = new Case (req.body);
 
     c.save(function(err) {
         if (err) {
             console.log('Error on save Case entity');
             res.status(500).send('We are working on that!');
         } else {
-            res.json({id: c._id});
+            res.json(c);
         }
     });
 };

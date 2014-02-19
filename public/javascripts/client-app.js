@@ -25,6 +25,7 @@ module.factory('Case', ['$resource',
     function($resource){
         return $resource('api/case/:id', {}, {
             get: {method:'GET', params:{id:'@id'}},
+            put: {method:'PUT', params:{id:'@id'}},
             post: {method:'POST'}
         });
     }]);
@@ -56,7 +57,7 @@ module.controller('CaseDetailCtrl', ['$scope', '$routeParams', '$location', '$q'
             $scope.saving = true;
 
             if (item.id) {
-                item.$save(function(data){
+                Case.put(item, function(data){
                     saveResult.resolve(data);
                 });
             } else {
