@@ -16,8 +16,8 @@ var conf = require('./conf');
 var mongoose = require('mongoose');
 var model = require('./model');
 var MongoStore = require('connect-mongo')(express);
-var cases = require('./routes/case');
 var hosting = require('./hosting');
+var mongorest = require('./rest-mongodb');
 
 var app = express();
 
@@ -104,7 +104,8 @@ app.get('/app', authorizedOnly, portal.index);
 app.get('/app/*', authorizedOnly, portal.index);
 
 // REST routes
-app.resource('/api/case', cases);
+app.resource('/api/case', mongorest(model.Case));
+app.resource('/api/user', mongorest(model.User));
 
 var port = app.get('port');
 http.createServer(app).listen(port, function(){
