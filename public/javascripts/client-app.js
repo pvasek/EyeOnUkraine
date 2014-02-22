@@ -139,8 +139,8 @@ module.controller('UserDetailCtrl', ['$scope', '$routeParams', '$location', '$q'
             saveResult.promise.then(function(data){
                 $scope.saving = false;
                 if (redirectToNew) {
-                    $scope.item = {};// in case we are on the new already
-                    $location.url('/users/new'); // in case we are not
+                    $scope.item = {};// in user we are on the new already
+                    $location.url('/users/new'); // in user we are not
                 } else if (lastId != data.id) {
                     $location.url('/users/' + data.id);
                 }

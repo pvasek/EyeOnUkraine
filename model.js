@@ -13,7 +13,7 @@ var defaultOptions = {
 
 var UserSchema = new mongoose.Schema({
     aid: { type: String},
-    email: { type: String},
+    email: { type: String, lowercase: true, trim: true, unique: true },
     isAdministrator: { type: Boolean },
     isActive: { type: Boolean },
     lastLogin: { type: Date }

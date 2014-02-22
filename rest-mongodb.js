@@ -58,7 +58,7 @@ module.exports = function(model){
 
         item.save(function(err) {
             if (err) {
-                console.log('Error on save Case entity');
+                console.log('Error on save Case entity' + err);
                 res.status(500).send('We are working on that!');
             } else {
                 res.json(item);
