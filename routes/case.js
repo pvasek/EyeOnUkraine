@@ -11,7 +11,9 @@ var caseSchema = new mongoose.Schema({
 
     place: { type: String },
     lat: { type: Number },
-    lng: { type: Number }
+    lng: { type: Number },
+
+    deleted: { type: Boolean }
 });
 
 // it is used in modelInstance.toJSON() calls,
@@ -42,7 +44,7 @@ exports.get = function(req, res, id) {
 };
 
 exports.getList = function(req, res) {
-    Case.find({}).lean().exec(function(err, cases) {
+    Case.find({deleted: { $ne: true }}).lean().exec(function(err, cases) {
         if (err) {
             console.log(err);
             res.status(500).send('We are working on that!');
@@ -86,8 +88,8 @@ exports.post = function(req, res){
     });
 };
 
-exports.delete = function(req, res, id) {
-    Case.findOneAndRemove({ _id: id }, function(err, c) {
+exports.deleteItem = function(req, res, id) {
+    Case.findByIdAndUpdate(id, { deleted: true }, function(err, c) {
         if (err) {
             console.log(err);
             res.status(500).send('We are working on that!');

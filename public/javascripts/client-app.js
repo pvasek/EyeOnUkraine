@@ -26,6 +26,7 @@ module.factory('Case', ['$resource',
         return $resource('api/case/:id', {}, {
             get: {method:'GET', params:{id:'@id'}},
             put: {method:'PUT', params:{id:'@id'}},
+            delete: {method:'DELETE', params:{id:'@id'}},
             post: {method:'POST'}
         });
     }]);
@@ -76,6 +77,14 @@ module.controller('CaseDetailCtrl', ['$scope', '$routeParams', '$location', '$q'
                 }
             })
         };
+
+        $scope.deleteItem = function(item){
+            if (window.confirm("Realy want to delete this item?")) {
+                item.$delete(function(){
+                    $location.url('/cases');
+                });
+            }
+        }
     }]);
 
 

@@ -86,7 +86,7 @@ app.resource = function(path, obj) {
         obj.get(req, res, req.params.id);
     });
     this.del(path + '/:id', authorizedOnly, function(req, res){
-        obj.delete(req, res, req.params.id);
+        obj.deleteItem(req, res, req.params.id);
     });
     this.put(path + '/:id', authorizedOnly, function(req, res){
         obj.put(req, res);

@@ -3,9 +3,11 @@
     <button ng-click="save(item)" class="btn btn-primary" ng-disable="saving">Save</button>
     <span ng-show="saving">Saving…</span>
     <button ng-click="save(item, true)" class="btn btn-default next-btn-group" ng-disable="saving">Save & New</button>
+    <button ng-click="deleteItem(item)" class="btn btn-danger pull-right" ng-disable="saving">Delete</button>
 </div>
 <h2>{{item.Title}}</h2>
-<form role="form" name="detail">
+<div ng-hide="item.$resolved">Loading...</div>
+<form role="form" name="detail" ng-show="item.$resolved">
     <div class="row">
         <div class="col-sm-6">
             <div class="form-group">
