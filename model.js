@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 
-
 var defaultOptions = {
 	toJSON: {
         transform: function (doc, ret, options) {
@@ -15,8 +14,9 @@ var defaultOptions = {
 var UserSchema = new mongoose.Schema({
     aid: { type: String},
     email: { type: String},
-    deleted: { type: Boolean }
-    //lastLogin: { type: 'String'}
+    isAdministrator: { type: Boolean },
+    isActive: { type: Boolean },
+    lastLogin: { type: Date }
 }, defaultOptions);
 
 //UserSchema.options.toJSON = defaultOptions.toJSON;

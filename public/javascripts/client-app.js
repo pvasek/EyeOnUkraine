@@ -12,6 +12,14 @@ module.config(['$routeProvider', '$locationProvider', function($routeProvider, $
             templateUrl: '/templates/case-list.html',
             controller: 'CaseListCtrl'
         })
+        .when('/users/:id', {
+            templateUrl: '/templates/user-detail.html',
+            controller: 'UserDetailCtrl'
+        })
+        .when('/users', {
+            templateUrl: '/templates/user-list.html',
+            controller: 'UserListCtrl'
+        })
         .otherwise({
             redirectTo: '/cases'
         });
@@ -31,6 +39,16 @@ module.factory('Case', ['$resource',
         });
     }]);
 
+module.factory('User', ['$resource',
+    function($resource) {
+        return $resource('api/user/:id', {}, {
+            get: { method: 'GET', params: { id: '@id' }},
+            put: { method: 'PUT', params: { id: '@id' }},
+            delete: { method: 'DELETE', params: { id: '@id' }},
+            post: { method: 'POST' }
+        });
+    }
+]);
 
 // registering controllers
 module.controller('MainCtrl', [function(){
@@ -39,7 +57,6 @@ module.controller('MainCtrl', [function(){
 module.controller('CaseListCtrl', ['$scope', 'Case', function($scope, Case){
     $scope.cases = Case.query();
 }]);
-
 
 module.controller('CaseDetailCtrl', ['$scope', '$routeParams', '$location', '$q', 'Case',
     function($scope, $routeParams, $location, $q, Case){
@@ -87,6 +104,58 @@ module.controller('CaseDetailCtrl', ['$scope', '$routeParams', '$location', '$q'
             }
         }
     }]);
+
+module.controller('UserListCtrl', ['$scope', 'User', function($scope, User){
+    $scope.cases = User.query();
+}]);
+
+module.controller('UserDetailCtrl', ['$scope', '$routeParams', '$location', '$q', 'User',
+    function($scope, $routeParams, $location, $q, User){
+        if ($routeParams.id == 'new') {
+            $scope.item = {};
+            $scope.item.$resolved = true; // this variable is used for show loading on the UI
+        } else {
+            $scope.item = User.get({id: $routeParams.id});
+        }
+
+        $scope.save = function(item, redirectToNew){
+            if (!$scope.detail.$valid) {
+                return;
+            }
+
+            var saveResult = $q.defer();
+            $scope.saving = true;
+
+            if (item.id) {
+                User.put(item, function(data){
+                    saveResult.resolve(data);
+                });
+            } else {
+                User.post(item, function(data){
+                    saveResult.resolve(data);
+                });
+            }
+            var lastId = item.id;
+            saveResult.promise.then(function(data){
+                $scope.saving = false;
+                if (redirectToNew) {
+                    $scope.item = {};// in case we are on the new already
+                    $location.url('/users/new'); // in case we are not
+                } else if (lastId != data.id) {
+                    $location.url('/users/' + data.id);
+                }
+            })
+        };
+
+        $scope.deleteItem = function(item){
+            if (window.confirm("Realy want to delete this user?")) {
+                item.$delete(function(){
+                    $location.url('/users');
+                });
+            }
+        }
+    }]);
+
 
 
 // custom directives

@@ -1,0 +1,17 @@
+<div class="toolbar">
+    <a href="/app#/users/new" class="btn btn-primary">New</a>
+</div>
+
+<table class="table">
+    <tr>
+        <th>e-mail</th>
+        <th>Is administrator</th>
+        <th>Is active</th>
+    </tr>
+    <tr ng-repeat="item in cases">
+        <td>{{item.email}}</td>
+        <td>{{item.isAdministrator}}</td>
+        <td>{{item.isActive}}</td>
+        <td><a ng-href="#/users/{{item.id}}">Edit</a></td>
+    </tr>
+</table>
