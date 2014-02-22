@@ -3,12 +3,13 @@ var mongoose = require('mongoose');
 
 var defaultOptions = {
 	toJSON: {
-		transform: function (doc, ret, options) {
-		    // we just "rename" _id to id
-		    ret.id = ret._id;
-		    delete ret._id;
-		}
-	}
+        transform: function (doc, ret, options) {
+            // we just "rename" _id to id
+            ret.id = ret._id;
+            delete ret._id;
+            delete ret.__v;
+        }
+    }
 };
 
 var UserSchema = new mongoose.Schema({
@@ -18,7 +19,9 @@ var UserSchema = new mongoose.Schema({
     //lastLogin: { type: 'String'}
 }, defaultOptions);
 
-var caseSchema = new mongoose.Schema({    
+//UserSchema.options.toJSON = defaultOptions.toJSON;
+
+var CaseSchema = new mongoose.Schema({
     date: Date,
     numberOfVictims: { type: Number, min: 1 },
 
@@ -34,5 +37,7 @@ var caseSchema = new mongoose.Schema({
     deleted: { type: Boolean }
 }, defaultOptions);
 
+//CaseSchema.options.toJSON = defaultOptions.toJSON;
+
 exports.User = mongoose.model('User', UserSchema);
-exports.Case = mongoose.model('Cases', caseSchema);
+exports.Case = mongoose.model('Cases', CaseSchema);

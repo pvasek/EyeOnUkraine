@@ -21,7 +21,7 @@ module.exports = function(model){
     };
 
     result.getList = function(req, res) {
-        model.find({deleted: { $ne: true }}).lean().exec(function(err, items) {
+        model.find({deleted: { $ne: true }}).exec(function(err, items) {
             if (err) {
                 console.log(err);
                 res.status(500).send('We are working on that!');
@@ -30,9 +30,6 @@ module.exports = function(model){
                 //res.status(404).send('Not found'); //MT: I'm not sure with 404 at this place
                 res.json([]);
             } else {
-                items.forEach(function(c){
-                    c.id = c._id;
-                });
                 res.json(items);
             }
         });
