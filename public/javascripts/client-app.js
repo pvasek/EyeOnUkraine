@@ -45,6 +45,7 @@ module.controller('CaseDetailCtrl', ['$scope', '$routeParams', '$location', '$q'
     function($scope, $routeParams, $location, $q, Case){
         if ($routeParams.id == 'new') {
             $scope.item = {};
+            $scope.item.$resolved = true; // this variable is used for show loading on the UI
         } else {
             $scope.item = Case.get({id: $routeParams.id});
         }
