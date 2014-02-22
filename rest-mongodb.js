@@ -1,11 +1,7 @@
-
-
 module.exports = function(model){
 
     var result = {};
 
-    //lean() - see: http://ilee.co.uk/mongoose-documents-and-jsonstringify/
-    // PV: I removed lean() in order to use the same toJSON method in all REST methods now
     result.get = function(req, res, id) {
         model.findOne({ _id: id }).exec(function(err, item) {
             if (err) {
@@ -26,8 +22,6 @@ module.exports = function(model){
                 console.log(err);
                 res.status(500).send('We are working on that!');
             } else if (items.length == 0) {
-                //PV: i think its valid to have no results, just return empty array
-                //res.status(404).send('Not found'); //MT: I'm not sure with 404 at this place
                 res.json([]);
             } else {
                 res.json(items);
