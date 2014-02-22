@@ -1,3 +1,5 @@
+var models = require('./model');
+
 module.exports = function(model){
 
     var result = {};
@@ -30,7 +32,15 @@ module.exports = function(model){
     };
 
     result.put = function(req, res, id) {
-        model.findByIdAndUpdate(req.body.id, req.body, function(err, item) {
+        var body = req.body;
+
+        //User could not change user's email
+        //MT: Maybe we should rethink concept of this common rest interface
+        if (model == models.User) {
+            delete body.email;
+        }
+
+        model.findByIdAndUpdate(body.id, body, function(err, item) {
             if (err) {
                 console.log(err);
                 res.status(500).send('We are working on that!');
