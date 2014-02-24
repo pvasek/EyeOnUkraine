@@ -1,26 +1,25 @@
 <div class="toolbar">
     <a href="/app#/users" class="btn btn-default">Back</a>
-    <button ng-click="save(item)" class="btn btn-primary" ng-disable="saving">Save</button>
+    <button ng-click="save(user)" class="btn btn-primary" ng-disable="saving" ng-if="currentUser.isAdministrator">Save</button>
     <span ng-show="saving">Saving…</span>
-    <button ng-click="save(item, true)" class="btn btn-default next-btn-group" ng-disable="saving">Save & New</button>
-    <button ng-click="deleteItem(item)" class="btn btn-danger pull-right" ng-disable="saving">Delete</button>
+    <button ng-click="save(user, true)" class="btn btn-default next-btn-group" ng-disable="saving" ng-if="currentUser.isAdministrator">Save & New</button>
+    <button ng-click="deleteuser(user)" class="btn btn-danger pull-right" ng-disable="saving" ng-if="currentUser.isAdministrator">Delete</button>
 </div>
-<h2>{{item.Title}}</h2>
-<div ng-hide="item.$resolved">Loading...</div>
-<form role="form" name="detail" ng-show="item.$resolved">
+<div ng-hide="user.$resolved">Loading...</div>
+<form role="form" name="detail" ng-show="user.$resolved">
     <div class="row">
         <div class="col-sm-6">
             <div class="form-group">
                 <label for="email">e-mail</label>
-                <input type="email" required class="form-control" id="email" placeholder="name@domain.com" ng-model="item.email" ng-disabled="item.id != null">
+                <input type="email" required class="form-control" id="email" placeholder="name@domain.com" ng-model="user.email" ng-disabled="user.id != null || !currentUser.isAdministrator">
             </div>
             <div class="form-group">
                 <label for="isAdministrator">Is administrator</label>
-                <input type="checkbox" class="form-control" id="isAdministrator" placeholder="" ng-model="item.isAdministrator" ng-init="item.isAdministrator=false">
+                <input type="checkbox" class="form-control" id="isAdministrator" placeholder="" ng-model="user.isAdministrator" ng-disabled="user.id == currentUser.id || !currentUser.isAdministrator" ng-init="user.isAdministrator=false">
             </div>
             <div class="form-group">
                 <label for="isActive">Is active</label>
-                <input type="checkbox" class="form-control" id="isActive" placeholder="" ng-model="item.isActive" ng-init="item.isActive=false">
+                <input type="checkbox" class="form-control" id="isActive" placeholder="" ng-model="user.isActive" ng-disabled="user.id == currentUser.id || !currentUser.isAdministrator" ng-init="user.isActive=false">
             </div>
         </div>
     </div>

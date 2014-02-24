@@ -1,4 +1,4 @@
-<div class="toolbar">
+<div class="toolbar" ng-if="currentUser.isAdministrator">
     <a href="/app#/users/new" class="btn btn-primary">New</a>
 </div>
 
@@ -8,10 +8,10 @@
         <th>Is administrator</th>
         <th>Is active</th>
     </tr>
-    <tr ng-repeat="item in cases">
-        <td>{{item.email}}</td>
-        <td>{{item.isAdministrator}}</td>
-        <td>{{item.isActive}}</td>
-        <td><a ng-href="#/users/{{item.id}}">Edit</a></td>
+    <tr ng-repeat="user in users">
+        <td>{{user.email}}</td>
+        <td>{{user.isAdministrator}}</td>
+        <td>{{user.isActive}}</td>
+        <td ng-if="currentUser.isAdministrator"><a ng-href="#/users/{{user.id}}">Edit</a></td>
     </tr>
 </table>

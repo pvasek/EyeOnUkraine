@@ -105,20 +105,23 @@ module.controller('CaseDetailCtrl', ['$scope', '$routeParams', '$location', '$q'
         }
     }]);
 
-module.controller('UserListCtrl', ['$scope', 'User', function($scope, User){
-    $scope.cases = User.query();
+module.controller('UserListCtrl', ['$scope', 'User', '$window', function($scope, User, $window){
+    $scope.currentUser = $window.currentUser;
+    $scope.users = User.query();
 }]);
 
-module.controller('UserDetailCtrl', ['$scope', '$routeParams', '$location', '$q', 'User',
-    function($scope, $routeParams, $location, $q, User){
+module.controller('UserDetailCtrl', ['$scope', '$routeParams', '$location', '$q', 'User', '$window',
+    function($scope, $routeParams, $location, $q, User, $window){
+        $scope.currentUser = $window.currentUser;
+
         if ($routeParams.id == 'new') {
-            $scope.item = {};
-            $scope.item.$resolved = true; // this variable is used for show loading on the UI
+            $scope.user = {};
+            $scope.user.$resolved = true; // this variable is used for show loading on the UI
         } else {
-            $scope.item = User.get({id: $routeParams.id});
+            $scope.user = User.get({id: $routeParams.id});
         }
 
-        $scope.save = function(item, redirectToNew){
+        $scope.save = function(user, redirectToNew){
             if (!$scope.detail.$valid) {
                 return;
             }
@@ -126,20 +129,25 @@ module.controller('UserDetailCtrl', ['$scope', '$routeParams', '$location', '$q'
             var saveResult = $q.defer();
             $scope.saving = true;
 
-            if (item.id) {
-                User.put(item, function(data){
+            if (user.id) {
+                User.put(user, function(data){
                     saveResult.resolve(data);
                 });
             } else {
-                User.post(item, function(data){
+                User.post(user, function(data){
                     saveResult.resolve(data);
+                }, function(err) {
+
+                    console.log(err);
                 });
             }
-            var lastId = item.id;
+
+            var lastId = user.id;
+
             saveResult.promise.then(function(data){
                 $scope.saving = false;
                 if (redirectToNew) {
-                    $scope.item = {};// in user we are on the new already
+                    $scope.user = {};// in user we are on the new already
                     $location.url('/users/new'); // in user we are not
                 } else if (lastId != data.id) {
                     $location.url('/users/' + data.id);
@@ -147,9 +155,9 @@ module.controller('UserDetailCtrl', ['$scope', '$routeParams', '$location', '$q'
             })
         };
 
-        $scope.deleteItem = function(item){
+        $scope.deleteItem = function(user){
             if (window.confirm("Realy want to delete this user?")) {
-                item.$delete(function(){
+                user.$delete(function(){
                     $location.url('/users');
                 });
             }

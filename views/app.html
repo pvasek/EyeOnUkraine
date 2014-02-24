@@ -2,6 +2,9 @@
 
 {% block head %}
     <link rel="stylesheet" href="/stylesheets/app.css">
+    <script type="application/javascript">
+        var currentUser = JSON.parse('{% autoescape false %}{{currentUser|json_encode}}{% endautoescape %}');
+    </script>
 {% endblock %}
 
 {% block content %}
@@ -15,12 +18,12 @@
 		<ul class="nav navbar-nav">
           <li class="active"><a href="#/cases">Cases</a></li>
         </ul>
-        <ul class="nav navbar-nav">
+        <ul class="nav navbar-nav" ng-if="{{currentUser.isAdministrator}}">
           <li class="active"><a href="#/users">Users</a></li>
         </ul>
       
       	<ul class="nav navbar-nav navbar-right">
-      		<li><a href="#/users/{{userId}}">{{userEmail}}</a></li>
+      		<li><a href="#/users/{{currentUser.id}}">{{currentUser.email}}</a></li>
       		<li><img src="{{userPictureUrl}}"/></li>
             <li><a href="/logout">Logout</a></li>
       </ul>

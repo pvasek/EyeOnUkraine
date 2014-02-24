@@ -38,19 +38,62 @@ module.exports = function(model){
         //MT: Maybe we should rethink concept of this common rest interface
         if (model == models.User) {
             delete body.email;
-        }
 
-        model.findByIdAndUpdate(body.id, body, function(err, item) {
-            if (err) {
-                console.log(err);
-                res.status(500).send('We are working on that!');
-            } else if(item == null) {
-                console.log("Document with id: " + id + " is not in database.");
-                res.status(404).send('Not found');
-            } else {
-                res.json(item);
-            }
-        })
+            model.findById(req.user.id, function(err, user) {
+                if (err) {
+                    console.log(err);
+                    res.status(500).send("We are working on that!");
+                    return;
+                } else if(user == null) {
+                    console.log("Current user with id: " + user.id + " is not in database.");
+                    res.status(404).send("Not found");
+                    return;
+                } else {
+                    if(user.id == body.id) {
+                        model.findByIdAndUpdate(body.id, body, function(err, item) {
+                            if (err) {
+                                console.log(err);
+                                res.status(500).send('We are working on that!');
+                            } else if(item == null) {
+                                console.log("Document with id: " + id + " is not in database.");
+                                res.status(404).send('Not found');
+                            } else {
+                                res.json(item);
+                            }
+                        });
+                    } else {
+                        if(user.isAdministrator) {
+                            model.findByIdAndUpdate(body.id, body, function(err, item) {
+                                if (err) {
+                                    console.log(err);
+                                    res.status(500).send('We are working on that!');
+                                } else if(item == null) {
+                                    console.log("Document with id: " + id + " is not in database.");
+                                    res.status(404).send('Not found');
+                                } else {
+                                    res.json(item);
+                                }
+                            })
+                        } else {
+                            res.status(500).send("You are not Administrator");
+                            return;
+                        }
+                    }
+                }
+            });
+        } else {
+            model.findByIdAndUpdate(body.id, body, function(err, item) {
+                if (err) {
+                    console.log(err);
+                    res.status(500).send('We are working on that!');
+                } else if(item == null) {
+                    console.log("Document with id: " + id + " is not in database.");
+                    res.status(404).send('Not found');
+                } else {
+                    res.json(item);
+                }
+            })
+        }
     };
 
     result.post = function(req, res){
