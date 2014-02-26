@@ -11,6 +11,9 @@ exports.createDefaultUsers = function(users) {
                     var newUser = new model.User({id: user.id, email: user.email});
                     newUser.save();
                     console.log('user saved');
+                } else {
+                    existing.isAdministrator = user.isAdministrator;
+                    existing.save();
                 }
             })
         })

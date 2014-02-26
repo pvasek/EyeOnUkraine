@@ -71,27 +71,34 @@ app.configure('development', function(){
 });
 
 
-function authorizedOnly(req, res, next) {
+var authorizedOnly = function (req, res, next) {
     if (req.loggedIn) {
         return next();
     }
     return res.redirect('/login');
-}
+};
+
+var authorizedAdminOnly = function (req, res, next) {
+    if (req.loggedIn && req.user.isAdministrator) {
+        return next();
+    }
+    return res.redirect('/login');
+};
 
 
 // helper function which register all routes for REST entity
-app.resource = function(path, obj) {
+app.resource = function (path, obj, authorize) {
     this.get(path, obj.getList);
-    this.get(path + '/:id', authorizedOnly, function(req, res){
+    this.get(path + '/:id', authorize, function(req, res){
         obj.get(req, res, req.params.id);
     });
-    this.del(path + '/:id', authorizedOnly, function(req, res){
+    this.del(path + '/:id', authorize, function(req, res){
         obj.deleteItem(req, res, req.params.id);
     });
-    this.put(path + '/:id', authorizedOnly, function(req, res){
+    this.put(path + '/:id', authorize, function(req, res){
         obj.put(req, res);
     });
-    this.post(path, authorizedOnly, function(req, res) {
+    this.post(path, authorize, function(req, res) {
         obj.post(req, res, req.params.id);
     });
 };
@@ -103,9 +110,10 @@ app.get('/logout', portal.logout);
 app.get('/app', authorizedOnly, portal.index);
 app.get('/app/*', authorizedOnly, portal.index);
 
+
 // REST routes
-app.resource('/api/case', mongorest(model.Case));
-app.resource('/api/user', mongorest(model.User));
+app.resource('/api/case', mongorest(model.Case), authorizedOnly);
+app.resource('/api/user', mongorest(model.User), authorizedAdminOnly);
 
 var port = app.get('port');
 http.createServer(app).listen(port, function(){
