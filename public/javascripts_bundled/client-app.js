@@ -27,7 +27,6 @@ module.config(['$routeProvider', '$locationProvider', function($routeProvider, $
     //$locationProvider.html5Mode(true);
 }]);
 
-
 // registering REST entities
 module.factory('Case', ['$resource',
     function($resource){
