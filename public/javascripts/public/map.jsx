@@ -1,5 +1,12 @@
 /** @jsx React.DOM */
 
+var htmlEncode = function(html){
+    if (!html) {
+        return html;
+    }
+    return html.replace(/\</g, '&lt;').replace(/\>/g, '&gt;')
+};
+
 exports.Map = React.createClass({
 
     propTypes: {
@@ -7,6 +14,7 @@ exports.Map = React.createClass({
         centerLng: React.PropTypes.number,
         centerLat: React.PropTypes.number
     },
+
 
     componentDidMount: function() {
         var element = this.getDOMNode();
@@ -45,6 +53,27 @@ exports.Map = React.createClass({
             if (y > maxY) y = maxY;
 
             map.setCenter(center);
+        });
+
+        var infowindow = new google.maps.InfoWindow();
+
+        this.props.points.forEach(function addPoint(point) {
+            var marker = new google.maps.Marker({
+                  position: new google.maps.LatLng(point.lat, point.lng),
+                  map: map,
+                  title: htmlEncode(point.title)
+              });
+
+            var openInfo = function() {
+                infowindow.setContent(marker.title);
+                infowindow.open(map,marker);
+            };
+            google.maps.event.addListener(marker, 'click', function() {
+                openInfo();
+            });
+            google.maps.event.addListener(marker, 'mouseover', function() {
+                openInfo();
+            });
         });
 
     },
