@@ -18,6 +18,7 @@ var model = require('./model');
 var MongoStore = require('connect-mongo')(express);
 var hosting = require('./hosting');
 var mongorest = require('./rest-mongodb');
+var apiCase = require('./routes/api/public-case.js');
 
 var app = express();
 
@@ -114,6 +115,7 @@ app.get('/app/*', authorizedOnly, portal.index);
 // REST routes
 app.resource('/api/case', mongorest(model.Case), authorizedOnly);
 app.resource('/api/user', mongorest(model.User), authorizedAdminOnly);
+app.get('/api/public/case', apiCase.getAll)
 
 var port = app.get('port');
 http.createServer(app).listen(port, function(){
